@@ -1,0 +1,33 @@
+language: generic
+
+services:
+  - docker
+
+env:
+  global:
+    - CLIENT_IMAGE=tzetzo/client
+    - SERVER_IMAGE=tzetzo/server
+    - WORKER_IMAGE=tzetzo/worker
+    - NGINX_IMAGE=tzetzo/nginx
+
+before_install:
+  - cd client
+  - npm install
+  - npm run test -- --watchAll=false
+  - cd ..
+# before_install:
+# - docker build -t client-test -f client/Dockerfile.dev ./client
+# - docker run -e CI=true --rm client-test npm run test -- --watchAll=false
+
+script:
+  - docker build -t $CLIENT_IMAGE ./client
+  - docker build -t $SERVER_IMAGE ./server
+  - docker build -t $WORKER_IMAGE ./worker
+  - docker build -t $NGINX_IMAGE ./nginx
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push $CLIENT_IMAGE
+  - docker push $SERVER_IMAGE
+  - docker push $WORKER_IMAGE
+  - docker push $NGINX_IMAGE

@@ -1,0 +1,13 @@
+FROM node:lts-alpine
+
+WORKDIR /app
+
+COPY package.json ./
+RUN npm install
+
+COPY . .
+
+# Install react-scripts globally if needed
+# RUN npm install -g react-scripts
+
+CMD ["npm", "start"]
