@@ -10,14 +10,14 @@ env:
     - WORKER_IMAGE=tzetzo/worker
     - NGINX_IMAGE=tzetzo/nginx
 
-before_install:
-  - cd client
-  - npm install
-  - npm run test -- --watchAll=false
-  - cd ..
 # before_install:
-# - docker build -t client-test -f client/Dockerfile.dev ./client
-# - docker run -e CI=true --rm client-test npm run test -- --watchAll=false
+#   - cd client
+#   - npm install
+#   - npm run test -- --watchAll=false
+#   - cd ..
+before_install:
+- docker build -t client-test -f client/Dockerfile.dev ./client
+- docker run -e CI=true --rm client-test npm run test -- --watchAll=false
 
 script:
   - docker build -t $CLIENT_IMAGE ./client
@@ -31,3 +31,15 @@ after_success:
   - docker push $SERVER_IMAGE
   - docker push $WORKER_IMAGE
   - docker push $NGINX_IMAGE
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'multi-docker'
+  env: 'MultiDocker-env'
+  bucket_name: 'elasticbeanstalk-us-east-1-923445559289'
+  bucket_path: 'docker-multi'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY # hou be set in Travis CI env vars
+  secret_access_key: $AWS_SECRET_KEY
