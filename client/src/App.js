@@ -22,10 +22,12 @@ function App() {
           <Link to="/">Home</Link>
           <Link to="/otherpage">Other Page</Link>
         </header>
-        <Routes>
-          <Route path="/" element={<Fib />} />
-          <Route path="/otherpage" element={<OtherPage />} />
-        </Routes>
+        <div style={{paddingTop: "5vh"}}>
+          <Routes>
+            <Route path="/" element={<Fib />} />
+            <Route path="/otherpage" element={<OtherPage />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
