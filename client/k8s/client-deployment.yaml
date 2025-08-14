@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # if we change the name k8s will create new deployment, otherwise it will update the existing one if kind is the same!!!
+  name: client-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: tzetzo/multi-client
+          ports:
+            - containerPort: 3000
